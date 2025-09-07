@@ -1,0 +1,7 @@
+
+[submodule "src/jgwill/storytelling"]
+	path = src/jgwill/storytelling
+	url = git@github.com:jgwill/storytelling.git
+[submodule "src/jgwill/coaiapy"]
+	path = src/jgwill/coaiapy
+	url = git@github.com:jgwill/coaiapy.git
