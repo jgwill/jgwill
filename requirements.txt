@@ -1,3 +1,16 @@
 # Development dependencies
 build
 twine
+
+# External dependencies that were previously submodules
+# For development setup:
+# 1. Clone repositories separately:
+#    git clone git@github.com:jgwill/coaiapy.git ../coaiapy
+#    git clone git@github.com:jgwill/storytelling.git ../storytelling
+# 2. Install in development mode:
+#    pip install -e ../coaiapy
+#    pip install -e ../storytelling
+
+# Production installation (direct from git):
+# -e git+ssh://git@github.com/jgwill/coaiapy.git#egg=coaiapy
+# -e git+ssh://git@github.com/jgwill/storytelling.git#egg=storytelling
