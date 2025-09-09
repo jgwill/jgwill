@@ -1,0 +1,6 @@
+[submodule "libs/coaiapy"]
+	path = libs/coaiapy
+	url = git@github.com:jgwill/coaiapy.git
+[submodule "libs/storytelling"]
+	path = libs/storytelling
+	url = git@github.com:jgwill/storytelling.git

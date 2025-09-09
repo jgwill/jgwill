@@ -2,14 +2,17 @@
 build
 twine
 
-# External dependencies that were previously submodules
-# For development setup:
-# 1. Clone repositories separately:
-#    git clone git@github.com:jgwill/coaiapy.git ../coaiapy
-#    git clone git@github.com:jgwill/storytelling.git ../storytelling
+# Submodule dependencies for development
+# After cloning with submodules, install in development mode:
+#   git clone --recurse-submodules git@github.com:jgwill/jgwill.git
+#   pip install -e libs/coaiapy -e libs/storytelling -e .
+
+# For manual setup:
+# 1. Initialize submodules: git submodule update --init --recursive  
 # 2. Install in development mode:
-#    pip install -e ../coaiapy
-#    pip install -e ../storytelling
+#    pip install -e libs/coaiapy
+#    pip install -e libs/storytelling
+#    pip install -e .
 
 # Production installation (direct from git):
 # -e git+ssh://git@github.com/jgwill/coaiapy.git#egg=coaiapy
