@@ -2,7 +2,7 @@ import argparse
 import asyncio
 import os
 import json
-from playwright.async_api import async_playwright, TimeoutError
+from playwright.async_api import async_playwright
 
 # --- Configuration Loading ---
 def get_config_path():
@@ -11,16 +11,56 @@ def get_config_path():
 def load_config():
     path = get_config_path()
     if not os.path.exists(path):
-        raise FileNotFoundError(f"Configuration file not found in current directory: {path}")
+        raise FileNotFoundError(f"Configuration file not found. Run 'wright --init-project' to create one.")
     with open(path, 'r') as f:
         return json.load(f)
+
+# --- Interactive Project Initialization ---
+def init_project():
+    """Interactively creates a new wright_config.json file."""
+    config_path = get_config_path()
+    if os.path.exists(config_path):
+        overwrite = input(f"Warning: {config_path} already exists. Overwrite? (y/n): ").lower()
+        if overwrite != 'y':
+            print("Initialization cancelled.")
+            return
+
+    print("--- Initializing New Project ---")
+    project_name = input("Enter a short name for this application (e.g., v0): ")
+    chat_url = input(f"Enter the Chat URL for '{project_name}': ")
+    prod_url = input(f"Enter the Production URL for '{project_name}': ")
+    
+    default_profile_name = os.path.basename(os.getcwd()).lower()
+    profile_name = input(f"Enter a name for the browser profile [{default_profile_name}]: ") or default_profile_name
+    
+    default_profile_path = os.path.expanduser(f"~/.config/jgwillwright/profiles/{profile_name}")
+    profile_path = input(f"Enter the full path for the profile [{default_profile_path}]: ") or default_profile_path
+
+    config = {
+        "profiles": {
+            "default": profile_name,
+            profile_name: profile_path
+        },
+        "apps": {
+            project_name: {
+                "chat_url": chat_url,
+                "production_url": prod_url
+            }
+        }
+    }
+
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=4)
+    
+    print("\nConfiguration saved to wright_config.json!")
+    print(f"Next step: Initialize the browser profile by running: wright --init-profile {profile_name}")
 
 # --- Profile and Context Management ---
 async def init_profile(profile_path):
     """Initializes a new persistent profile by launching a browser for manual login."""
     print(f"Initializing new profile at: {profile_path}")
-    if not os.path.exists(profile_path):
-        os.makedirs(profile_path)
+    if not os.path.exists(os.path.dirname(profile_path)):
+        os.makedirs(os.path.dirname(profile_path))
     
     async with async_playwright() as p:
         context = await p.chromium.launch_persistent_context(profile_path, headless=False)
@@ -33,7 +73,6 @@ async def init_profile(profile_path):
         print("Close the browser manually when you are finished.")
         print("*****************************************************************")
         
-        # This will block until the browser is manually closed.
         await context.wait_for_event("close")
         print("Browser closed. Profile initialization complete.")
 
@@ -82,11 +121,16 @@ async def view_app(context, app_config):
 # --- Main Execution Logic ---
 async def main():
     parser = argparse.ArgumentParser(description="JGWright: A multi-app automation and deployment tool.")
+    parser.add_argument("--init-project", action="store_true", help="Interactively create a new project configuration.")
     parser.add_argument("--init-profile", type=str, help="Initialize a new persistent browser profile by name.")
     parser.add_argument("--deploy", type=str, help="Deploy a specific application (e.g., 'v0').")
     parser.add_argument("--view", type=str, help="View a deployed application (e.g., 'v0').")
     parser.add_argument("--profile", type=str, help="Specify a profile to use (overrides default from config).")
     args = parser.parse_args()
+
+    if args.init_project:
+        init_project()
+        return
 
     config = load_config()
 
@@ -96,14 +140,13 @@ async def main():
         await init_profile(config['profiles'][args.init_profile])
         return
 
-    # Determine which profile to use
-    profile_name = args.profile or "default"
-    if profile_name not in config['profiles']:
-        raise ValueError(f"Profile '{profile_name}' not found in wright_config.json")
+    profile_name = args.profile or config['profiles'].get("default")
+    if not profile_name or profile_name not in config['profiles']:
+        raise ValueError(f"Could not determine a profile to use. Check your wright_config.json.")
     profile_path = config['profiles'][profile_name]
 
     if not os.path.isdir(profile_path):
-        raise FileNotFoundError(f"Profile path does not exist: {profile_path}. Run --init-profile {profile_name} first.")
+        raise FileNotFoundError(f"Profile path does not exist: {profile_path}. Run 'wright --init-profile {profile_name}' first.")
 
     async with async_playwright() as p:
         context = await p.chromium.launch_persistent_context(profile_path, headless=False)
