@@ -4,3 +4,6 @@
 [submodule "libs/storytelling"]
 	path = libs/storytelling
 	url = git@github.com:jgwill/storytelling.git
+[submodule "mcp/servers"]
+	path = mcp/servers
+	url = git@github.com:jgwill/mcpservers.git

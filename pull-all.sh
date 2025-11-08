@@ -9,7 +9,10 @@ echo "🔄 Pulling all changes..."
 echo "📥 Pulling main repo..."
 git pull
 
-# Update all submodules
+# Initialize and update all submodules
+echo "📥 Initializing submodules..."
+git submodule update --init --recursive
+
 echo "📥 Updating submodules..."
 git submodule update --remote --merge
 
