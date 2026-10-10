@@ -1,0 +1,23 @@
+{
+  "name": "jgwill",
+  "version": "0.0.1",
+  "description": "JGWill",
+  "keywords": [
+    "jgwill"
+  ],
+  "homepage": "https://github.com/jgwill/jgwill#readme",
+  "bugs": {
+    "url": "https://github.com/jgwill/jgwill/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgwill/jgwill.git"
+  },
+  "license": "MIT",
+  "author": "J.Guillaume Descoteaux-Isabelle",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
