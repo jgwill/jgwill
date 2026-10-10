@@ -17,6 +17,13 @@
   "author": "J.Guillaume Descoteaux-Isabelle",
   "type": "commonjs",
   "main": "index.js",
+  "bin": {
+    "jgwill-story": "bin/jgwill-story.mjs"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -101,6 +108,7 @@
     "@miadi/voice-mcp": "^0.4.5",
     "@miadi/wampum-narrative-engine": "^0.1.1",
     "@miadi/webweave": "^0.1.1",
-    "medicine-wheel": "^1.0.5"
+    "medicine-wheel": "^1.0.5",
+    "storytelling": "^0.1.3"
   }
 }
